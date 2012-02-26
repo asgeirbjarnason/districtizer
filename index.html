@@ -2,13 +2,14 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
     <style type="text/css">
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0 }
       #map_canvas { height: 100% }
     </style>
     <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?sensor=false">
+      src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing">
     </script>
     <script type="text/javascript">
       function initialize() {
@@ -19,6 +20,31 @@
         };
         var map = new google.maps.Map(document.getElementById("map_canvas"),
             myOptions);
+        
+        var drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.TOP_CENTER,
+                drawingModes: [
+                    google.maps.drawing.OverlayType.MARKER,
+                ]
+            }
+        });
+        drawingManager.setMap(map);
+        
+        /*markerOptions: {
+            icon: 'images/beachflag.png'
+          },
+          circleOptions: {
+            fillColor: '#ffff00',
+            fillOpacity: 1,
+            strokeWeight: 5,
+            clickable: false,
+            editable: true,
+            zIndex: 1
+          }
+        });*/
       }
     </script>
   </head>
