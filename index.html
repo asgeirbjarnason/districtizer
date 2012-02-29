@@ -13,6 +13,9 @@
     <script type="text/javascript">
       function initialize() {
         var polygons = [];
+        var colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+        var currentColor = 0;
+        
         var myOptions = {
           center: new google.maps.LatLng(64.124690, -21.875839),
           zoom: 12,
@@ -26,7 +29,7 @@
             drawingControl: true,
             polygonOptions: {
                 editable: true,
-                fillColor: 'red'
+                fillColor: colors[currentColor]
             },
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_CENTER,
@@ -38,10 +41,11 @@
         drawingManager.setMap(map);
         
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+            currentColor = (currentColor+1) % colors.length;
+            
             drawingManager.setOptions({
                 polygonOptions: {
-                    editable: true,
-                    fillcolor: 'blue'
+                    fillColor: colors[currentColor]
                 }
             });
             polygons.push(polygon);
