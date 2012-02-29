@@ -8,9 +8,8 @@
       body { height: 100%; margin: 0; padding: 0 }
       #map_canvas { height: 100% }
     </style>
-    <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing">
-    </script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing"> type="text/javascript></script>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
     <script type="text/javascript">
       function initialize() {
         var polygons = [];
@@ -54,27 +53,6 @@
             }
             console.log(coords);
         });
-        /*google.maps.event.addListener(path, 'set_at', function(path) {
-            var coords = 'New coordinates:\n';
-            for (var i = 0; i < path.length; i++) {
-                coords += '\t' + path.getAt(i).lat() + ', ' + path.getAt(i).lng() + '\n';
-            }
-            console.log(coords);
-        ));*/
-        
-        //google.maps.event.addDomListener(window, 'load', initialize);
-        /*markerOptions: {
-            icon: 'images/beachflag.png'
-          },
-          circleOptions: {
-            fillColor: '#ffff00',
-            fillOpacity: 1,
-            strokeWeight: 5,
-            clickable: false,
-            editable: true,
-            zIndex: 1
-          }
-        });*/
       }
     </script>
   </head>
