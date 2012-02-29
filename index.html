@@ -13,6 +13,7 @@
     </script>
     <script type="text/javascript">
       function initialize() {
+        var polygons = [];
         var myOptions = {
           center: new google.maps.LatLng(64.124690, -21.875839),
           zoom: 12,
@@ -22,17 +23,46 @@
             myOptions);
         
         var drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingMode: null, // We don't want to begin in a drawing mode.
             drawingControl: true,
+            polygonOptions: {
+                editable: true,
+                fillColor: 'red'
+            },
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_CENTER,
                 drawingModes: [
-                    google.maps.drawing.OverlayType.MARKER,
+                    google.maps.drawing.OverlayType.POLYGON
                 ]
             }
         });
         drawingManager.setMap(map);
         
+        google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+            drawingManager.setOptions({
+                polygonOptions: {
+                    editable: true,
+                    fillcolor: 'blue'
+                }
+            });
+            polygons.push(polygon);
+            path = polygon.getPath();
+            
+            var coords = 'Coordinates:\n';
+            for (var i = 0; i < path.length; i++) {
+                coords += '\t' + path.getAt(i).lat() + ', ' + path.getAt(i).lng() + '\n';
+            }
+            console.log(coords);
+        });
+        /*google.maps.event.addListener(path, 'set_at', function(path) {
+            var coords = 'New coordinates:\n';
+            for (var i = 0; i < path.length; i++) {
+                coords += '\t' + path.getAt(i).lat() + ', ' + path.getAt(i).lng() + '\n';
+            }
+            console.log(coords);
+        ));*/
+        
+        //google.maps.event.addDomListener(window, 'load', initialize);
         /*markerOptions: {
             icon: 'images/beachflag.png'
           },
