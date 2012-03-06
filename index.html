@@ -8,57 +8,9 @@
       body { height: 100%; margin: 0; padding: 0 }
       #map_canvas { height: 100% }
     </style>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing"> type="text/javascript></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing" type="text/javascript"></script>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      function initialize() {
-        var polygons = [];
-        var colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
-        var currentColor = 0;
-        
-        var myOptions = {
-          center: new google.maps.LatLng(64.124690, -21.875839),
-          zoom: 12,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById("map_canvas"),
-            myOptions);
-        
-        var drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: null, // We don't want to begin in a drawing mode.
-            drawingControl: true,
-            polygonOptions: {
-                editable: true,
-                fillColor: colors[currentColor]
-            },
-            drawingControlOptions: {
-                position: google.maps.ControlPosition.TOP_CENTER,
-                drawingModes: [
-                    google.maps.drawing.OverlayType.POLYGON
-                ]
-            }
-        });
-        drawingManager.setMap(map);
-        
-        google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
-            currentColor = (currentColor+1) % colors.length;
-            
-            drawingManager.setOptions({
-                polygonOptions: {
-                    fillColor: colors[currentColor]
-                }
-            });
-            polygons.push(polygon);
-            path = polygon.getPath();
-            
-            var coords = 'Coordinates:\n';
-            for (var i = 0; i < path.length; i++) {
-                coords += '\t' + path.getAt(i).lat() + ', ' + path.getAt(i).lng() + '\n';
-            }
-            console.log(coords);
-        });
-      }
-    </script>
+    <script src="map.js" type="text/javascript"></script>
   </head>
   <body onload="initialize()">
     <div id="map_canvas" style="width:100%; height:100%"></div>
