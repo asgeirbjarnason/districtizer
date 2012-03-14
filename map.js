@@ -44,4 +44,31 @@ function initialize() {
         }
         console.log(coords);
     });
+    
+    jQuery(window).resize(reflow);
+    reflow();
+}
+
+function reflow() {
+    var winHeight = $(window).height();
+    var winWidth = $(window).width();
+    
+    // topmost_container
+    //    map_canvas
+    //    polygon_list
+    $("#map_canvas").css({
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: winWidth,
+        height: winHeight - 150
+    });
+    
+    $("#polygon_list").css({
+        position: "absolute",
+        top: winHeight - 150,
+        left: 0,
+        width: winWidth,
+        height: 150
+    })
 }
