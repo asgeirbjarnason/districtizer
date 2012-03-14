@@ -53,22 +53,19 @@ function reflow() {
     var winHeight = $(window).height();
     var winWidth = $(window).width();
     
-    // topmost_container
-    //    map_canvas
-    //    polygon_list
     $("#map_canvas").css({
         position: "absolute",
         top: 0,
         left: 0,
         width: winWidth,
-        height: winHeight - 150
+        height: winHeight - 250
     });
     
-    $("#polygon_list").css({
+    $("#polygon_list_container").css({
         position: "absolute",
-        top: winHeight - 150,
+        top: winHeight - 250,
         left: 0,
         width: winWidth,
-        height: 150
+        height: 250
     })
 }
