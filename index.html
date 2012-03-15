@@ -39,9 +39,12 @@
         height: 20px;
         margin: 0px;
         padding: 0px;
-        background: #e9e9ff;
-        
         display: table-row;
+    }
+    
+    /* Zebra striping of table */
+    #polygon_list_table_wrapper li:nth-of-type(odd) {
+        background: #e9e9ff;
     }
     
     .polygon_color_identifier {
@@ -72,7 +75,7 @@
                         <span class="polygon_color_identifier"></span>
                         <p class="polygon_name">Vesturbær</p>
                     </li>
-                    <li class="polygon_entry" style="background: white;">
+                    <li class="polygon_entry">
                         <span class="polygon_color_identifier" style="background: blue;"></span>
                         <p class="polygon_name">Austurbær</p>
                     </li>
