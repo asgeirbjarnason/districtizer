@@ -1,0 +1,55 @@
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+#map_canvas { width: 100%; height: 100% }
+#topmost_container { width: 100%; height: 100%; }
+#polygon_list_container {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border-top: 2px solid #999;
+    background: #eee;
+    padding: 5px;
+}
+
+#polygon_list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: 1px solid #999;
+    background: white;
+    width: 100%;
+    height: 100%;
+    
+}
+
+#polygon_list_table_wrapper {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    display: table;
+}
+
+.polygon_entry {
+    height: 20px;
+    margin: 0px;
+    padding: 0px;
+    display: table-row;
+}
+
+/* Zebra striping of table */
+#polygon_list_table_wrapper li:nth-of-type(odd) {
+    background: #e9e9ff;
+}
+
+.polygon_color_identifier {
+    background: red;
+    width: 20px;
+    height: 100%;
+    display: table-cell;
+}
+.polygon_entry > p {
+    margin: 0px;
+    padding: 5px;
+    font: 11px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    display: table-cell;
+}
