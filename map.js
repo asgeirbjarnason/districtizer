@@ -1,4 +1,14 @@
-function initialize() {
+var App = Em.Application.create({
+    ready: function() {
+        console.log("Er að keyra constructorinn!");
+        setupMap();
+        $(window).resize(reflow);
+        reflow();
+        this._super();
+    }
+});
+
+function setupMap() {
     var polygons = [];
     var colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
     var currentColor = 0;
@@ -44,9 +54,6 @@ function initialize() {
         }
         console.log(coords);
     });
-    
-    jQuery(window).resize(reflow);
-    reflow();
 }
 
 function reflow() {
