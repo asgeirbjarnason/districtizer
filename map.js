@@ -93,8 +93,71 @@ App.PolygonController = Em.ArrayController.create({
 App.PolygonListView = Em.View.extend({
    nameBinding: 'this.content.name',
    colorBinding: 'this.content.color',
+   colorStyleStringBinding: 'this.content.colorStyleString',
    
    colorPick: function(context, ev, something) {
-       var element = $(ev.srcElement);
-   } 
+       var el = $(ev.srcElement);
+       var content = this.get('content');
+       var offset = el.offset();
+       var currentColor = content.get('color');
+       offset.top += el.outerHeight();
+       
+       App.colorpickerController.target(offset, currentColor, function(color) {
+           content.set('color', color);
+       })
+   }
+});
+
+
+
+App.overlayController = Em.Object.create({
+    active: false,
+    
+    activeChanged: function() {
+        if (!this.active) {
+            App.colorpickerController.disable();
+        }
+    }.observes('active')
+});
+
+App.OverlayView = Em.View.extend({
+    activeBinding: 'App.overlayController.active',
+    
+    overlayMode: function() {
+        return (App.overlayController.get('active')) ? 'overlay-active' : 'overlay-inactive';
+    }.property('active'),
+    
+    click: function(e) {
+        App.overlayController.set('active', false);
+    }
+});
+
+
+
+App.colorpickerController = Em.Object.create({
+    init: function() {
+        this.colorpicker = $.farbtastic('#colorpicker');
+        this.colorpickerContainer = $('#colorpicker-container');
+        this._super();
+    },
+    
+    target: function(offset, initialColor, colorChangeCallback) {
+        // Can't call this after setting offset, because jQuery doesn't like positioning hidden
+        // elements.
+        this.colorpickerContainer.show(300);
+        this.colorpickerContainer.offset(offset);
+        this.colorpicker.setColor(initialColor);
+        this.colorpicker.linkTo(function(color) {
+            if (color != '#NaNNaNNaN') {
+                colorChangeCallback(color);
+            }
+        });
+        App.overlayController.set('active', true);
+    },
+    disable: function() {
+        // So that the colorpicker.setColor() call next time the colorpicker is activated doesn't
+        // change the color of the last object linked to it.
+        this.colorpicker.linkTo(function() {});
+        this.colorpickerContainer.hide(300);
+    }
 });
