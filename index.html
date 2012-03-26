@@ -10,7 +10,17 @@
     <div id="map_canvas"></div>
     <div id="polygon_list_container">
       <div id="polygon_list">
-        <ul id="polygon_list_table_wrapper">
+        <script type="text/x-handlebars">
+          <ul id="polygon_list_table_wrapper">
+            {{#each App.PolygonController}}
+              <li class="polygon_entry">
+                <span class="polygon_color_identifier" style="background: {{unbound color}};"></span>
+                <p class="polyname">{{name}}</p>
+              </li>
+            {{/each}}
+          </ul>
+        </script>
+        <!--<ul id="polygon_list_table_wrapper">
           <li class="polygon_entry">
             <span class="polygon_color_identifier"></span>
             <p class="polygon_name">Vesturbær</p>
@@ -23,7 +33,7 @@
             <span class="polygon_color_identifier" style="background: green;"></span>
             <p class="polygon_name">Tunglið</p>
           </li>
-        </ul>
+        </ul>-->
       </div>
     </div>
   </div>
