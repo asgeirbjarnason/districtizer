@@ -108,7 +108,7 @@ App.PolygonListView = Em.View.extend({
        var content = this.get('content');
        var offset = el.offset();
        var currentColor = content.get('color');
-       offset.top += el.outerHeight();
+       //offset.top += el.outerHeight();
        
        App.colorpickerController.target(offset, currentColor, function(color) {
            content.set('color', color);
@@ -146,13 +146,16 @@ App.colorpickerController = Em.Object.create({
     init: function() {
         this.colorpicker = $.farbtastic('#colorpicker');
         this.colorpickerContainer = $('#colorpicker-container');
+        this.containerHeight = this.colorpickerContainer.outerHeight();
+        this.colorpickerContainer.hide();
         this._super();
     },
     
     target: function(offset, initialColor, colorChangeCallback) {
         // Can't call this after setting offset, because jQuery doesn't like positioning hidden
         // elements.
-        this.colorpickerContainer.show(300);
+        this.colorpickerContainer.fadeIn(150);
+        offset.top -= this.containerHeight;
         this.colorpickerContainer.offset(offset);
         this.colorpicker.setColor(initialColor);
         this.colorpicker.linkTo(function(color) {
@@ -166,6 +169,6 @@ App.colorpickerController = Em.Object.create({
         // So that the colorpicker.setColor() call next time the colorpicker is activated doesn't
         // change the color of the last object linked to it.
         this.colorpicker.linkTo(function() {});
-        this.colorpickerContainer.hide(300);
+        this.colorpickerContainer.fadeOut(150);
     }
 });
