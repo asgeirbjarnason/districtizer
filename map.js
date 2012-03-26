@@ -1,9 +1,9 @@
 var App = Em.Application.create({
     ready: function() {
-        console.log("Er að keyra constructorinn!");
         this.setupMap();
         $(window).resize(this.reflow);
         this.reflow();
+        
         this._super();
     },
     reflow: function() {
