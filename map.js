@@ -77,9 +77,17 @@ App.Polygon = Em.Object.extend({
     color: '#ffffff',
     name: '',
     polyRef: null,
+    
     colorStyleString: function() {
         return 'background: ' + this.get('color') + ';';
-    }.property('color')
+    }.property('color'),
+    
+    colorChanged: function() {
+        var newColor = this.get('color');
+        var polyRef = this.get('polyRef');
+        
+        polyRef.setOptions({ fillColor: newColor });
+    }.observes('color')
 });
 
 App.PolygonController = Em.ArrayController.create({
