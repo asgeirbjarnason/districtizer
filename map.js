@@ -56,11 +56,11 @@ var App = Em.Application.create({
         drawingManager.setMap(map);
 
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
-            var poly = {
+            var poly = App.Polygon.create({
                 polyRef: polygon,
                 name: 'Svæði ' + currentColor,
                 color: colors[currentColor]
-            }
+            });
             
             currentColor = (currentColor+1) % colors.length;
 
@@ -70,16 +70,17 @@ var App = Em.Application.create({
             
             App.PolygonController.addPolygon(poly);
             console.log(poly);
-            /*polygons.push(polygon);
-            path = polygon.getPath();
-
-            var coords = 'Coordinates:\n';
-            for (var i = 0; i < path.length; i++) {
-                coords += '\t' + path.getAt(i).lat() + ', ' + path.getAt(i).lng() + '\n';
-            }
-            console.log(coords);*/
         });
     }
+});
+
+App.Polygon = Em.Object.extend({
+    color: '#ffffff',
+    name: '',
+    polyRef: null,
+    colorStyleString: function() {
+        return 'background: ' + this.get('color') + ';';
+    }.property('color')
 });
 
 App.PolygonController = Em.ArrayController.create({
@@ -89,3 +90,7 @@ App.PolygonController = Em.ArrayController.create({
         this.pushObject(poly);
     }
 });
+
+/*App.PolygonListView = Em.View.Extend({
+    this
+});*/
