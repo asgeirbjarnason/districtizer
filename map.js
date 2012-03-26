@@ -69,7 +69,6 @@ var App = Em.Application.create({
             });
             
             App.PolygonController.addPolygon(poly);
-            console.log(poly);
         });
     }
 });
@@ -91,6 +90,11 @@ App.PolygonController = Em.ArrayController.create({
     }
 });
 
-/*App.PolygonListView = Em.View.Extend({
-    this
-});*/
+App.PolygonListView = Em.View.extend({
+   nameBinding: 'this.content.name',
+   colorBinding: 'this.content.color',
+   
+   colorPick: function(context, ev, something) {
+       var element = $(ev.srcElement);
+   } 
+});
