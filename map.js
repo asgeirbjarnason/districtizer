@@ -28,7 +28,7 @@ var App = Em.Application.create({
     },
     setupMap: function() {
         var polygons = [];
-        var colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+        var colors = ['#FF0000', '#0000FF', '#00FF00', '#FFFF00', '#FF00FF', '#FF8000'];
         var currentColor = 0;
 
         var myOptions = {
@@ -56,21 +56,36 @@ var App = Em.Application.create({
         drawingManager.setMap(map);
 
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+            var poly = {
+                polyRef: polygon,
+                name: 'Svæði ' + currentColor,
+                color: colors[currentColor]
+            }
+            
             currentColor = (currentColor+1) % colors.length;
 
             drawingManager.setOptions({
-                polygonOptions: {
-                    fillColor: colors[currentColor]
-                }
+                polygonOptions: { fillColor: colors[currentColor] }
             });
-            polygons.push(polygon);
+            
+            App.PolygonController.addPolygon(poly);
+            console.log(poly);
+            /*polygons.push(polygon);
             path = polygon.getPath();
 
             var coords = 'Coordinates:\n';
             for (var i = 0; i < path.length; i++) {
                 coords += '\t' + path.getAt(i).lat() + ', ' + path.getAt(i).lng() + '\n';
             }
-            console.log(coords);
+            console.log(coords);*/
         });
+    }
+});
+
+App.PolygonController = Em.ArrayController.create({
+    content: [],
+    
+    addPolygon: function(poly) {
+        this.pushObject(poly);
     }
 });
