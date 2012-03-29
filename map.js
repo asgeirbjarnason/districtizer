@@ -31,29 +31,33 @@ var App = Em.Application.create({
         var colors = ['#FF0000', '#0000FF', '#00FF00', '#FFFF00', '#FF00FF', '#FF8000'];
         var currentColor = 0;
 
-        var myOptions = {
+        this.mapOptions = {
             center: new google.maps.LatLng(64.124690, -21.875839),
             zoom: 12,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
+        
+        this.polygonOptions = {
+            strokeWeight: 1,
+            editable: true
+        };
+        
+        
+        var map = new google.maps.Map(document.getElementById("map_canvas"), this.mapOptions);
+        
+        //var initalpolopts = 
+        
         var drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: null, // We don't want to begin in a drawing mode.
             drawingControl: true,
-            polygonOptions: {
-                strokeWeight: 1,
-                editable: true,
-                fillColor: colors[currentColor]
-            },
+            polygonOptions: $.extend({fillColor: colors[currentColor]}, this.polygonOptions),
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_CENTER,
-                drawingModes: [
-                google.maps.drawing.OverlayType.POLYGON
-                ]
+                drawingModes: [ google.maps.drawing.OverlayType.POLYGON ]
             }
         });
         drawingManager.setMap(map);
+        var that = this;
 
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
             var poly = App.Polygon.create({
@@ -63,9 +67,9 @@ var App = Em.Application.create({
             });
             
             currentColor = (currentColor+1) % colors.length;
-
+            
             drawingManager.setOptions({
-                polygonOptions: { fillColor: colors[currentColor], editable: true, strokeWeight: 1 }
+                polygonOptions: $.extend({fillColor: colors[currentColor]}, that.polygonOptions)
             });
             
             App.PolygonController.addPolygon(poly);
