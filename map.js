@@ -36,13 +36,13 @@ var App = Em.Application.create({
             zoom: 12,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map_canvas"),
-        myOptions);
+        var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
         var drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: null, // We don't want to begin in a drawing mode.
             drawingControl: true,
             polygonOptions: {
+                strokeWeight: 1,
                 editable: true,
                 fillColor: colors[currentColor]
             },
@@ -65,7 +65,7 @@ var App = Em.Application.create({
             currentColor = (currentColor+1) % colors.length;
 
             drawingManager.setOptions({
-                polygonOptions: { fillColor: colors[currentColor] }
+                polygonOptions: { fillColor: colors[currentColor], editable: true, strokeWeight: 1 }
             });
             
             App.PolygonController.addPolygon(poly);
