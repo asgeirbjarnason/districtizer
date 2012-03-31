@@ -45,8 +45,6 @@ var App = Em.Application.create({
         
         var map = new google.maps.Map(document.getElementById("map_canvas"), this.mapOptions);
         
-        //var initalpolopts = 
-        
         var drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: null, // We don't want to begin in a drawing mode.
             drawingControl: true,
@@ -92,6 +90,20 @@ App.Polygon = Em.Object.extend({
         
         polyRef.setOptions({ fillColor: newColor });
     }.observes('color')
+});
+
+App.markerController = Em.ArrayController.create({
+    content: [],
+    init: function() {
+        var that = this;
+        $.getJSON('locations.json', function(data) {
+            var dataAsArray = [];
+            for (key in data) {
+                dataAsArray.push(data[key]);
+            }
+            that.set('content', dataAsArray);
+        });
+    }
 });
 
 App.PolygonController = Em.ArrayController.create({
