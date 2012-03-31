@@ -43,9 +43,9 @@ var App = Em.Application.create({
         };
         
         
-        var map = new google.maps.Map(document.getElementById("map_canvas"), this.mapOptions);
+        this.map = new google.maps.Map(document.getElementById("map_canvas"), this.mapOptions);
         
-        var drawingManager = new google.maps.drawing.DrawingManager({
+        this.drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: null, // We don't want to begin in a drawing mode.
             drawingControl: true,
             polygonOptions: $.extend({fillColor: colors[currentColor]}, this.polygonOptions),
@@ -54,10 +54,10 @@ var App = Em.Application.create({
                 drawingModes: [ google.maps.drawing.OverlayType.POLYGON ]
             }
         });
-        drawingManager.setMap(map);
+        this.drawingManager.setMap(App.map);
         var that = this;
 
-        google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+        google.maps.event.addListener(this.drawingManager, 'polygoncomplete', function(polygon) {
             var poly = App.Polygon.create({
                 polyRef: polygon,
                 name: 'Svæði ' + currentColor,
@@ -66,7 +66,7 @@ var App = Em.Application.create({
             
             currentColor = (currentColor+1) % colors.length;
             
-            drawingManager.setOptions({
+            that.drawingManager.setOptions({
                 polygonOptions: $.extend({fillColor: colors[currentColor]}, that.polygonOptions)
             });
             
@@ -103,7 +103,10 @@ App.markerController = Em.ArrayController.create({
             }
             that.set('content', dataAsArray);
         });
-    }
+    },
+    contentChanged: function() {
+        console.log('App.markerController.contentChanged() fired.');
+    }.observes('content')
 });
 
 App.PolygonController = Em.ArrayController.create({
