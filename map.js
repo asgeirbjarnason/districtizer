@@ -75,6 +75,50 @@ var App = Em.Application.create({
     }
 });
 
+//------------------------------------------------------------------------------------------------//
+// View template for editable text fields. Stolen from the contacts example from the ember website.
+Em.Handlebars.registerHelper('editable', function(path, options) {
+    options.hash.valueBinding = path;
+    return Em.Handlebars.helpers.view.call(this, App.EditField, options);
+})
+
+App.EditField = Em.View.extend({
+    tagName: 'span',
+    templateName: 'edit-field',
+    
+    click: function() {
+        //alert('event!');
+        var touchTime = new Date();
+        if (this._lastTouchTime && touchTime - this._lastTouchTime < 150) {
+            this.doubleClick();
+        }
+        else {
+            this._lastTouchTime = touchTime;
+        }
+        return false;
+    },
+    doubleClick: function() {
+        this.set('isEditing', true);
+        return false;
+    },
+    focusOut: function() {
+        this.set('isEditing', false);
+    },
+    keyUp: function(evt) {
+        if (evt.keyCode === 13) {
+            this.set('isEditing', false);
+        }
+    }
+});
+
+App.TextField = Em.TextField.extend({
+  didInsertElement: function() {
+    this.$().focus();
+  }
+});
+//------------------------------------------------------------------------------------------------//
+
+
 App.Polygon = Em.Object.extend({
     color: '#ffffff',
     name: '',

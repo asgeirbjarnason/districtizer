@@ -5,6 +5,17 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="js/libs/farbtastic/farbtastic.css">
+  <script type="text/x-handlebars" data-template-name="edit-field">
+    {{#if isEditing}}
+      {{view App.TextField valueBinding="value" propogatesEvents=true}}
+    {{else}}
+      {{#if value}}
+        {{value}}
+      {{else}}
+        <span>[nafn vantar]</span>
+      {{/if}}
+    {{/if}}
+  </script>
 </head>
 <body>
   <div id="topmost_container">
@@ -18,7 +29,7 @@
                 <span class="polygon_color_identifier"
                       {{bindAttr style="colorStyleString"}}
                       {{action "colorPick"}}></span>
-                <p class="polyname=">{{name}}</name>
+                <p class="polyname=">{{editable name}}</name>
               {{/view}}
             {{/each}}
           </ul>
