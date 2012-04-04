@@ -15,15 +15,15 @@ var App = Em.Application.create({
             top: 0,
             left: 0,
             width: winWidth,
-            height: winHeight - 250
+            height: winHeight - 150
         });
 
         $("#polygon_list_container").css({
             position: "absolute",
-            top: winHeight - 250,
+            top: winHeight - 150,
             left: 0,
             width: winWidth,
-            height: 250
+            height: 150
         })
     },
     setupMap: function() {
@@ -105,7 +105,15 @@ App.markerController = Em.ArrayController.create({
         });
     },
     contentChanged: function() {
-        console.log('App.markerController.contentChanged() fired.');
+        //console.log('App.markerController.contentChanged() fired.');
+        $.each(this.content, function(i, item) {
+            //console.log(item);
+            var marker = new google.maps.Marker({
+                map: App.map,
+                position: new google.maps.LatLng(item.lat, item.lng),
+                title: item.name
+            });
+        });
     }.observes('content')
 });
 
