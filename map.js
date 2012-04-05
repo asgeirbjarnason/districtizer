@@ -119,21 +119,11 @@ App.TextField = Em.TextField.extend({
 //------------------------------------------------------------------------------------------------//
 
 
-App.Polygon = Em.Object.extend({
-    color: '#ffffff',
-    name: '',
-    polyRef: null,
-    
-    colorStyleString: function() {
-        return 'background: ' + this.get('color') + ';';
-    }.property('color'),
-    
-    colorChanged: function() {
-        var newColor = this.get('color');
-        var polyRef = this.get('polyRef');
-        
-        polyRef.setOptions({ fillColor: newColor });
-    }.observes('color')
+App.Marker = Em.Object.extend({
+    markerRef: null,
+    title: '',
+    lat: NaN,
+    lng: NaN
 });
 
 App.markerController = Em.ArrayController.create({
@@ -159,6 +149,23 @@ App.markerController = Em.ArrayController.create({
             });
         });
     }.observes('content')
+});
+
+App.Polygon = Em.Object.extend({
+    color: '#ffffff',
+    name: '',
+    polyRef: null,
+    
+    colorStyleString: function() {
+        return 'background: ' + this.get('color') + ';';
+    }.property('color'),
+    
+    colorChanged: function() {
+        var newColor = this.get('color');
+        var polyRef = this.get('polyRef');
+        
+        polyRef.setOptions({ fillColor: newColor });
+    }.observes('color')
 });
 
 App.PolygonController = Em.ArrayController.create({
