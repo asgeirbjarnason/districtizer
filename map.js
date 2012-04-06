@@ -17,14 +17,30 @@ var App = Em.Application.create({
             width: winWidth,
             height: winHeight - 150
         });
-
-        $("#polygon_list_container").css({
+        
+        $("#operations_list").css({
             position: "absolute",
             top: winHeight - 150,
             left: 0,
             width: winWidth,
-            height: 150
+            height: 25,
+        });
+        
+        $("#polygon_list_container").css({
+            position: "absolute",
+            top: winHeight - 125,
+            left: 0,
+            width: winWidth - 500,
+            height: 125
         })
+        
+        $("#district_association_list_container").css({
+            position: "absolute",
+            top: winHeight - 125,
+            left: winWidth - 500,
+            width: 500,
+            height: 125
+        });
     },
     setupMap: function() {
         var polygons = [];
@@ -119,9 +135,11 @@ App.TextField = Em.TextField.extend({
 //------------------------------------------------------------------------------------------------//
 
 
+
 App.Marker = Em.Object.extend({
     markerRef: null,
     title: '',
+    polygonModelRef: null,
     lat: NaN,
     lng: NaN
 });
@@ -131,30 +149,38 @@ App.markerController = Em.ArrayController.create({
     init: function() {
         var that = this;
         $.getJSON('locations.json', function(data) {
-            var dataAsArray = [];
+            var markers = [];
             for (key in data) {
-                dataAsArray.push(data[key]);
+                var marker = new App.Marker();
+                marker.lat = data[key].lat;
+                marker.lng = data[key].lng;
+                marker.title = data[key].name;
+                markers.push(marker);
             }
-            that.set('content', dataAsArray);
+            that.set('content', markers);
+            
         });
     },
     contentChanged: function() {
-        //console.log('App.markerController.contentChanged() fired.');
         $.each(this.content, function(i, item) {
-            //console.log(item);
             var marker = new google.maps.Marker({
                 map: App.map,
                 position: new google.maps.LatLng(item.lat, item.lng),
                 title: item.name
             });
+            item.markerRef = marker;
         });
     }.observes('content')
 });
+
+
 
 App.Polygon = Em.Object.extend({
     color: '#ffffff',
     name: '',
     polyRef: null,
+    coordinates: [],
+    markerModelRefs: [],
     
     colorStyleString: function() {
         return 'background: ' + this.get('color') + ';';
@@ -172,6 +198,14 @@ App.PolygonController = Em.ArrayController.create({
     content: [],
     
     addPolygon: function(poly) {
+        var path = poly.polyRef.getPath();
+        for (var i = 0; i < path.length; i++) {
+            poly.coordinates.push({
+                lat: path.getAt(i).lat(),
+                lng: path.getAt(i).lng()
+            });
+        }
+        
         this.pushObject(poly);
     }
 });
@@ -186,7 +220,6 @@ App.PolygonListView = Em.View.extend({
        var content = this.get('content');
        var offset = el.offset();
        var currentColor = content.get('color');
-       //offset.top += el.outerHeight();
        
        App.colorpickerController.target(offset, currentColor, function(color) {
            content.set('color', color);
@@ -250,3 +283,100 @@ App.colorpickerController = Em.Object.create({
         this.colorpickerContainer.fadeOut(150);
     }
 });
+
+
+function districtize() {
+    // Prepare the districts:
+    var polygons = [];
+    for (var i = 0; i < App.PolygonController.content.length; i++) {
+        var path = App.PolygonController.content[i].polyRef.getPath();
+        
+        var poly = {
+            coordinates: []
+        }
+        
+        for (var j = 0; j < path.length; j++) {
+            poly.coordinates.push({
+                lat: path.getAt(j).lat(),
+                lng: path.getAt(j).lng()
+            })
+        }
+        polygon.boundingBox = boundingBox(polygon.coordinates);
+        
+        polygons.push(poly);
+    }
+}
+
+function boundingBox(coordinates) {
+    var bounds = {
+        max: {lat: Number.POSITIVE_INFINITY, lng: Number.POSITIVE_INFINITY},
+        min: {lat: Number.NEGATIVE_INFINITY, lng: Number.NEGATIVE_INFINITY}
+    };
+    
+    for (var i = 0; i < coordinates.length; i++) {
+        bounds.min.lat = Math.min(coordinates[i].lat, bounds.min.lat);
+        bounds.min.lng = Math.min(coordinates[i].lng, bounds.min.lng);
+        bounds.max.lat = Math.min(coordinates[i].lat, bounds.max.lat);
+        bounds.max.lng = Math.min(coordinates[i].lng, bounds.max.lng);
+    }
+    
+    return bounds;
+}
+
+function intersection(line1, line2) {
+    // Algorithm pilfered from http://paulbourke.net/geometry/lineline2d/
+    var x1 = line1.x1;
+    var y1 = line1.y1;
+    var x2 = line1.x2;
+    var y2 = line1.y2;
+    var x3 = line2.x1;
+    var y3 = line2.y1;
+    var x4 = line2.x2;
+    var y4 = line2.y2;
+    var denom  = (y4-y3) * (x2-x1) - (x4-x3) * (y2-y1);
+    var numera = (x4-x3) * (y1-y3) - (y4-y3) * (x1-x3);
+    var numerb = (x2-x1) * (y1-y3) - (y2-y1) * (x1-x3);
+    
+    // Are the lines coincident?
+    if (denom == numera == numerb == 0.0) { return true; }
+    
+    // Are the lines parallel?
+    if (denom == 0.0) { return false; }
+    
+    var mua = numera / denom;
+    var mub = numerb / denom;
+    
+    // Is the intersection within the bounds of both lines?
+    if (mua > 0.0 && mua < 1.0 && mub > 0.0 && mub < 1.0) { return true; }
+    
+    // We have exhausted other possibilities. The lines do not intersect.
+    return false;
+}
+
+function point_in_boundingBox(point, boundingBox) {
+    if (point.x < boundingBox.min.x || point.x > boundingBox.max.x) {
+        return false;
+    }
+    if (point.y < boundingBox.min.y || point.y > boundingBox.max.y) {
+        return false;
+    }
+    return true;
+}
+
+function point_in_polygon(point, polygon) {
+    var eps = 0.1;
+    var line = {x0: polygon.boundingBox.min.x - eps, y0: point.y, x1: point.x, y1: point.y};
+    
+    if (!point_in_boundingBox(point, polygon.boundingBox)) { return false; }
+    
+    var intersections = 0;
+    
+}
+
+/*def segments(iterable):
+    it = iterable.__iter__()
+    first = p2 = it.next()
+    for el in it:
+        p1, p2 = p2, el
+        yield p1, p2
+    yield p2, first*/

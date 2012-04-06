@@ -20,6 +20,11 @@
 <body>
   <div id="topmost_container">
     <div id="map_canvas"></div>
+    <div id="operations_list">
+      <script type="text/x-handlebars">
+        <a href="#">Reikna!</a> <a href="#">Hlaða!</a> <a href="#">Vista!</a>
+      </script>
+    </div>
     <div id="polygon_list_container">
       <div id="polygon_list">
         <script type="text/x-handlebars">
@@ -35,6 +40,27 @@
           </ul>
         </script>
       </div>
+    </div>
+    <div id="district_association_list_container">
+      <pre id="district_association_list">
+Miðbær, Hlíðar og Vesturbær
+   + Austurbæjarskóli
+   + Vesturbæjarskóli
+   + Hlíðaskóli
+   + Grandaskóli
+   + Grandaborg
+   + Gullborg
+   + Grófarhús
+   + Ráðhúsið
+
+Laugardalur og Háaleiti
+   + Höfðatorg
+   + Breiðagerðisskóli
+   + Laugarnesskóli
+   + Laugalækjaskóli
+   + Laugaborg
+   + Lækjaborg
+      </pre>
     </div>
     
     <script type="text/x-handlebars">

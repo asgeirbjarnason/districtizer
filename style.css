@@ -6,7 +6,7 @@ body { height: 100%; margin: 0; padding: 0 }
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    border-top: 2px solid #999;
+    border-top: 1px solid #999;
     background: #eee;
     padding: 5px;
 }
@@ -19,7 +19,34 @@ body { height: 100%; margin: 0; padding: 0 }
     background: white;
     width: 100%;
     height: 100%;
-    
+}
+
+#district_association_list_container {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border-top: 1px solid #999;
+    border-left: 1px solid #999;
+    background: #eee;
+    padding: 5px;
+}
+
+#district_association_list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: 1px solid #999;
+    background: white;
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: scroll;
+}
+
+#operations_list {
+    border-top: 2px solid #999;
+    padding-left: 10px;
 }
 
 #polygon_list_table_wrapper {
