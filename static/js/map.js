@@ -148,7 +148,7 @@ App.markerController = Em.ArrayController.create({
     content: [],
     init: function() {
         var that = this;
-        $.getJSON('locations.json', function(data) {
+        $.getJSON('/locations', function(data) {
             var markers = [];
             for (key in data) {
                 var marker = new App.Marker();

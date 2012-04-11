@@ -12,6 +12,24 @@ def sitemap():
   response.headers["Content-type"] = "text/html"
   return response
 
+@app.route('/polygons', methods=['GET', 'PUT'])
+def polygons():
+    polygonpath = './data/polygons.json'
+    if flask.request.method == 'PUT':
+        polygons = flask.request.form
+        print polygons
+        return ''
+    else:
+        response = flask.make_response(open(polygonpath).read())
+        response.headers["Content-type"] = 'application/json'
+        return response
+
+@app.route('/locations', methods=['GET'])
+def locations():
+    response = flask.make_response(open('./data/locations.json').read())
+    response.headers['Content-type'] = 'application/json'
+    return response
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
