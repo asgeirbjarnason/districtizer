@@ -191,7 +191,24 @@ App.Polygon = Em.Object.extend({
         var polyRef = this.get('polyRef');
         
         polyRef.setOptions({ fillColor: newColor });
-    }.observes('color')
+    }.observes('color'),
+    
+    export: function() {
+        var exported = {
+            color: this.color,
+            name: this.name,
+            coordinates: []
+        };
+        var path = this.polyRef.getPath();
+        for (var i = 0; i < path.length; i++) {
+            exported.coordinates.push({
+                lat: path.getAt(i).lat(),
+                lng: path.getAt(i).lng()
+            })
+        }
+        
+        return exported;
+    }
 });
 
 App.PolygonController = Em.ArrayController.create({
@@ -207,6 +224,22 @@ App.PolygonController = Em.ArrayController.create({
         }
         
         this.pushObject(poly);
+    },
+    
+    upload: function() {
+        var polygons = {};
+        for (var i = 0; i < this.content.length; i++) {
+            polygons[(i+1).toString()] = this.content[i].export();
+        }
+        
+        
+        $.ajax({
+            url: '/polygons',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(polygons),
+            dataType: 'json'
+        })
     }
 });
 

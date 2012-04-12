@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import flask
+import json
 
 app = flask.Flask(__name__)
 app.debug = True
@@ -16,8 +17,8 @@ def sitemap():
 def polygons():
     polygonpath = './data/polygons.json'
     if flask.request.method == 'PUT':
-        polygons = flask.request.form
-        print polygons
+        polygonfile = open(polygonpath, 'w')
+        polygonfile.write(json.dumps(flask.request.json))
         return ''
     else:
         response = flask.make_response(open(polygonpath).read())
