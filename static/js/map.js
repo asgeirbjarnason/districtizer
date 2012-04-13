@@ -137,6 +137,7 @@ App.TextField = Em.TextField.extend({
 
 
 App.Marker = Em.Object.extend({
+    id: null,
     markerRef: null,
     title: '',
     polygonModelRef: null,
@@ -152,9 +153,10 @@ App.markerController = Em.ArrayController.create({
             var markers = [];
             for (key in data) {
                 var marker = new App.Marker();
-                marker.lat = data[key].lat;
-                marker.lng = data[key].lng;
-                marker.title = data[key].name;
+                marker.set('lat', data[key].lat);
+                marker.set('lng', data[key].lng)
+                marker.set('title', data[key].name);
+                marker.set('id', key);
                 markers.push(marker);
             }
             that.set('content', markers);
@@ -197,7 +199,8 @@ App.Polygon = Em.Object.extend({
         var exported = {
             color: this.color,
             name: this.name,
-            coordinates: []
+            coordinates: [],
+            markers: []
         };
         var path = this.polyRef.getPath();
         for (var i = 0; i < path.length; i++) {
@@ -206,7 +209,9 @@ App.Polygon = Em.Object.extend({
                 lng: path.getAt(i).lng()
             })
         }
-        
+        for (var i = 0; i < this.markerModelRefs.length; i++) {
+            exported.markers.push(this.markerModelRefs[i].get('id'));
+        }
         return exported;
     }
 });
@@ -215,18 +220,19 @@ App.PolygonController = Em.ArrayController.create({
     content: [],
     
     addPolygon: function(poly) {
+        console.log("addPolygon()!");
         var path = poly.polyRef.getPath();
-        for (var i = 0; i < path.length; i++) {
+        /*for (var i = 0; i < path.length; i++) {
             poly.coordinates.push({
                 lat: path.getAt(i).lat(),
                 lng: path.getAt(i).lng()
             });
-        }
+        }*/
         
         this.pushObject(poly);
     },
     
-    upload: function() {
+    save: function() {
         var polygons = {};
         for (var i = 0; i < this.content.length; i++) {
             polygons[(i+1).toString()] = this.content[i].export();
@@ -240,8 +246,40 @@ App.PolygonController = Em.ArrayController.create({
             data: JSON.stringify(polygons),
             dataType: 'json'
         })
+    },
+    
+    load: function() {
+        var that = this;
+        $.getJSON('/polygons', function(data) {
+            $.each(data, function(i, item) {
+                var coords = [];
+                for (var i = 0; i < item.coordinates.length; i++) {
+                    coords.push(new google.maps.LatLng(
+                        item.coordinates[i].lat,
+                        item.coordinates[i].lng
+                    ));
+                }
+                var mapPoly = new google.maps.Polygon(
+                    $.extend({paths: coords, fillColor: item.color}, App.polygonOptions)
+                );
+                mapPoly.setMap(App.map);
+                var poly = App.Polygon.create({
+                    polyRef: mapPoly,
+                    name: item.name,
+                    color: item.color
+                });
+                that.addPolygon(poly);
+            });
+        });
+    },
+    
+    init: function() {
+        this.load();
+        this._super();
     }
 });
+
+
 
 App.PolygonListView = Em.View.extend({
    nameBinding: 'this.content.name',
